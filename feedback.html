@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic | Feedback</title>
+
+    <!-- Importing styles and libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f4f4f9, #eae9f4);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        /* Bottom Navbar */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .bottom-navbar a {
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .bottom-navbar a i {
+            display: block;
+            font-size: 20px;
+        }
+
+        .bottom-navbar a:hover {
+            background-color: #575757;
+        }
+
+        .container {
+            padding: 20px;
+            flex: 1; /* Allow container to expand and fill space */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0; /* Remove top margin to eliminate gap */
+        }
+
+        .feedback-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+            color: #333;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat h3 {
+            margin-bottom: 5px;
+        }
+
+        /* Rotating Testimonials */
+        .testimonials {
+            position: relative;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .testimonial-item {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-item.active {
+            display: block;
+        }
+
+        /* Rating System */
+        .rating {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .stars {
+            color: gold;
+            font-size: 2rem;
+        }
+
+        .feedback-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .feedback-form textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .feedback-form button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .feedback-form button:hover {
+            background-color: #575757;
+        }
+
+        .header {
+            background-color: #302f2f;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .feedback-stats {
+                flex-direction: column; /* Stack stats vertically on mobile */
+                align-items: center;
+            }
+            .stat {
+                margin: 10px 0; /* Add margin for spacing */
+            }
+            .stars {
+                font-size: 1.5rem; /* Smaller stars on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section Start -->
+    <div class="header">
+       
+    </div>
+    <!-- Header Section End -->
+
+    <div class="container">
+        <h1>Customer Feedback</h1>
+
+        <!-- Feedback stats -->
+        <div class="feedback-stats">
+            <div class="stat">
+                <h3>500+</h3>
+                <p>Submissions</p>
+            </div>
+            <div class="stat">
+                <h3>4.8/5</h3>
+                <p>Average Rating</p>
+            </div>
+        </div>
+
+        <!-- Rating system -->
+        <div class="rating">
+            <h4>Rate Us:</h4>
+            <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i> <!-- 4-star rating -->
+            </div>
+        </div>
+
+        <!-- Rotating testimonials -->
+        <div class="testimonials">
+            <div class="testimonial-item active">
+                <p>"This app has simplified investing for me!"</p>
+                <h4>- User 1</h4>
+            </div>
+            <div class="testimonial-item">
+                <p>"I love the easy-to-use interface and features!"</p>
+                <h4>- User 2</h4>
+            </div>
+            <div class="testimonial-item">
+                <p>"Best app for market insights!"</p>
+                <h4>- User 3</h4>
+            </div>
+        </div>
+
+        <!-- Feedback form -->
+        <div class="feedback-form">
+            <textarea id="feedbackTextarea" placeholder="Enter your feedback"></textarea>
+            <button onclick="submitFeedback()">Submit</button>
+            <div id="errorMessage" style="color:red; display:none;">Please enter your feedback!</div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="bottom-navbar">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="news.html"><i class="fas fa-chart-line"></i><span>Stocks</span></a>
+        <a href="video.html"><i class="fas fa-video"></i><span>Videos</span></a>
+        <a href="about us.html"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+        <a href="feedback.html"><i class="fas fa-comment"></i><span>Feedback</span></a>
+    </nav>
+
+    <!-- Scripts for testimonials -->
+    <script>
+        let currentTestimonial = 0;
+        const testimonials = document.querySelectorAll('.testimonial-item');
+        function rotateTestimonials() {
+            testimonials[currentTestimonial].classList.remove('active');
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            testimonials[currentTestimonial].classList.add('active');
+        }
+        setInterval(rotateTestimonials, 3000); // Change testimonial every 3 seconds
+
+        function submitFeedback() {
+            const feedback = document.getElementById('feedbackTextarea').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            if (feedback === '') {
+                errorMessage.style.display = 'block';
+            } else {
+                alert('Thank you for your feedback!');
+                document.getElementById('feedbackTextarea').value = '';
+                errorMessage.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

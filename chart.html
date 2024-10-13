@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+        }
+        .container {
+            padding: 20px;
+            max-width: 100%;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0; /* Remove top margin to eliminate gap */
+        }
+        .header {
+            background-color: #302f2f;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px;
+        }
+        .chart-options {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        select, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #000000;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #030303;
+        }
+        .info-message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .chart-container {
+                height: 250px;
+            }
+            select, button {
+                font-size: 14px;
+                max-width: 100%; /* Make dropdown and button full width */
+            }
+            h1 {
+                font-size: 24px; /* Adjust title size for small screens */
+            }
+        }
+        /* Bottom Navbar */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .bottom-navbar a {
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .bottom-navbar a i {
+            display: block;
+            font-size: 20px;
+        }
+
+        .bottom-navbar a:hover {
+            background-color: #575757;
+        }
+    </style>
+</head>
+<body>
+     <!-- Header Section Start -->
+     <div class="header">
+       
+     </div>
+     <!-- Header Section End -->
+ 
+
+    <div class="container">
+        <h1>Stock Visualization</h1>
+        
+        <div class="card">
+            <div class="chart-options">
+                <select id="companySelect">
+                    <option value="OGDC">OGDC</option>
+                    <option value="PPL">PPL</option>
+                    <option value="KEL">K-Electric Limited</option>
+                    <option value="FFC">Fauji Fertilizer Company</option>
+                    <option value="LUCK">Lucky Cement</option>
+                </select>
+
+                <select id="chartTypeSelect">
+                    <option value="candlestick">Candlestick Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="bar">Bar Chart</option>
+                    <option value="area">Area Chart</option>
+                </select>
+
+                <select id="indicatorSelect">
+                    <option value="none">No Indicator</option>
+                    <option value="SMA">Simple Moving Average (SMA)</option>
+                    <option value="EMA">Exponential Moving Average (EMA)</option>
+                    <option value="Bollinger">Bollinger Bands</option>
+                    
+                 
+                </select>
+
+                <button onclick="loadChart()">Update Chart</button>
+                
+                <div class="info-message">
+                    For further features, visualizations, and insights, visit our <a href="YOUR_WEBSITE_LINK_HERE" target="_blank">website</a>.
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div id="chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const companiesData = {
+            "OGDC": generateSampleData(),
+            "PPL": generateSampleData(),
+            "KEL": generateSampleData(),
+            "FFC": generateSampleData(),
+            "LUCK": generateSampleData(),
+        };
+
+        function loadChart() {
+            const company = document.getElementById("companySelect").value;
+            const chartType = document.getElementById("chartTypeSelect").value;
+            const indicator = document.getElementById("indicatorSelect").value;
+
+            const data = companiesData[company];
+
+            if (chartType === 'candlestick') {
+                const fig = createCandlestickChart(data, company);
+                Plotly.newPlot('chart', fig.data, fig.layout);
+            } else if (chartType === 'line') {
+                const fig = createLineChart(data);
+                Plotly.newPlot('chart', fig.data, fig.layout);
+            } else if (chartType === 'bar') {
+                const fig = createBarChart(data);
+                Plotly.newPlot('chart', fig.data, fig.layout);
+            } else if (chartType === 'area') {
+                const fig = createAreaChart(data);
+                Plotly.newPlot('chart', fig.data, fig.layout);
+            }
+
+            // Add selected indicator
+            if (indicator !== "none") {
+                addIndicator(indicator, data);
+            }
+        }
+
+        function createCandlestickChart(data, company) {
+            const fig = {
+                data: [{
+                    x: data.map(item => item.date),
+                    open: data.map(item => item.open_price),
+                    high: data.map(item => item.high_price),
+                    low: data.map(item => item.low_price),
+                    close: data.map(item => item.close_price),
+                    type: 'candlestick',
+                    name: company
+                }],
+                layout: {
+                    title: `${company} Candlestick Chart`,
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Price' },
+                }
+            };
+            return fig;
+        }
+
+        function createLineChart(data) {
+            const fig = {
+                data: [{
+                    x: data.map(item => item.date),
+                    y: data.map(item => item.close_price),
+                    mode: 'lines',
+                    name: 'Close Price'
+                }],
+                layout: {
+                    title: 'Line Chart',
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Price' },
+                }
+            };
+            return fig;
+        }
+
+        function createBarChart(data) {
+            const fig = {
+                data: [{
+                    x: data.map(item => item.date),
+                    y: data.map(item => item.close_price),
+                    type: 'bar',
+                    name: 'Close Price'
+                }],
+                layout: {
+                    title: 'Bar Chart',
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Price' },
+                }
+            };
+            return fig;
+        }
+
+        function createAreaChart(data) {
+            const fig = {
+                data: [{
+                    x: data.map(item => item.date),
+                    y: data.map(item => item.close_price),
+                    fill: 'tozeroy',
+                    type: 'scatter',
+                    name: 'Close Price'
+                }],
+                layout: {
+                    title: 'Area Chart',
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Price' },
+                }
+            };
+            return fig;
+        }
+
+        function addIndicator(indicator, data) {
+            let trace;
+            if (indicator === "SMA") {
+                trace = {
+                    x: data.map(item => item.date),
+                    y: calculateSMA(data),
+                    mode: 'lines',
+                    name: 'SMA',
+                    line: { color: 'orange' }
+                };
+            } else if (indicator === "EMA") {
+                trace = {
+                    x: data.map(item => item.date),
+                    y: calculateEMA(data),
+                    mode: 'lines',
+                    name: 'EMA',
+                    line: { color: 'purple' }
+                };
+            } else if (indicator === "Bollinger") {
+                const { sma, upperBand, lowerBand } = calculateBollingerBands(data);
+                const upperTrace = {
+                    x: data.map(item => item.date),
+                    y: upperBand,
+                    mode: 'lines',
+                    name: 'Upper Bollinger Band',
+                    line: { color: 'green' }
+                };
+                const lowerTrace = {
+                    x: data.map(item => item.date),
+                    y: lowerBand,
+                    mode: 'lines',
+                    name: 'Lower Bollinger Band',
+                    line: { color: 'red' }
+                };
+                Plotly.addTraces('chart', [upperTrace, lowerTrace]);
+            }
+            // Add trace to the chart
+            if (trace) {
+                Plotly.addTraces('chart', [trace]);
+            }
+        }
+
+        // Example calculation functions (replace with actual logic)
+        function calculateSMA(data, window = 20) {
+            const smaData = [];
+            for (let i = window - 1; i < data.length; i++) {
+                const avg = data.slice(i - window + 1, i + 1).reduce((sum, item) => sum + item.close_price, 0) / window;
+                smaData.push(avg);
+            }
+            return new Array(window - 1).fill(null).concat(smaData);
+        }
+
+        function calculateEMA(data, window = 20) {
+            const emaData = [];
+            const k = 2 / (window + 1);
+            let ema = data[0].close_price; // Start with the first close price
+            for (let i = 0; i < data.length; i++) {
+                ema = (data[i].close_price * k) + (ema * (1 - k));
+                emaData.push(ema);
+            }
+            return emaData;
+        }
+
+        function calculateBollingerBands(data, window = 20, numStdDev = 2) {
+            const sma = calculateSMA(data, window);
+            const upperBand = [];
+            const lowerBand = [];
+            for (let i = window - 1; i < data.length; i++) {
+                const windowData = data.slice(i - window + 1, i + 1);
+                const mean = windowData.reduce((sum, item) => sum + item.close_price, 0) / window;
+                const stdDev = Math.sqrt(windowData.reduce((sum, item) => sum + Math.pow(item.close_price - mean, 2), 0) / window);
+                upperBand.push(mean + (numStdDev * stdDev));
+                lowerBand.push(mean - (numStdDev * stdDev));
+            }
+            return {
+                sma,
+                upperBand: new Array(window - 1).fill(null).concat(upperBand),
+                lowerBand: new Array(window - 1).fill(null).concat(lowerBand),
+            };
+        }
+
+        function generateSampleData() {
+            const data = [];
+            const today = new Date();
+            for (let i = 0; i < 50; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    open_price: Math.random() * 100 + 50,
+                    high_price: Math.random() * 100 + 50,
+                    low_price: Math.random() * 100,
+                    close_price: Math.random() * 100 + 50,
+                });
+            }
+            return data.reverse();
+        }
+
+        // Load the initial chart
+        loadChart();
+    </script>
+     <!-- Navbar -->
+     <nav class="bottom-navbar">
+        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="news.html"><i class="fas fa-chart-line"></i><span>Stocks</span></a>
+        <a href="video.html"><i class="fas fa-video"></i><span>Videos</span></a>
+        <a href="about us.html"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+        <a href="feedback.html"><i class="fas fa-comment"></i><span>Feedback</span></a>
+    </nav>
+</body>
+</html>
